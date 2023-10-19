@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ShoeSales.Models;
 
 namespace ShoeSales.Controllers
 {
@@ -7,10 +8,16 @@ namespace ShoeSales.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        public string GetProducts()
+        private readonly ShopContext _shopContext;
+        public ProductsController(ShopContext shopContext)
         {
-            return "OKstring";
+            _shopContext = shopContext;
+            _shopContext.Database.EnsureCreated();
+        }
+        [HttpGet]
+        public IEnumerable<Product> GetAllProducts()
+        {
+            return _shopContext.Products.ToArray();
         }
     }
 }
