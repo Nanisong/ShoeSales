@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShoeSales.Models;
 
 namespace ShoeSales.Controllers
@@ -14,10 +15,46 @@ namespace ShoeSales.Controllers
             _shopContext = shopContext;
             _shopContext.Database.EnsureCreated();
         }
+        //[HttpGet]
+        ////(Previous) get all products 
+        //public IEnumerable<Product> GetAllProducts()
+        //{
+        //    return _shopContext.Products.ToArray();
+        //}
         [HttpGet]
-        public IEnumerable<Product> GetAllProducts()
+        // Previeous Code: Before async
+        //public ActionResult<IEnumerable<Product>> GetAllProducts()
+        //{
+        //    var products = _shopContext.Products.ToArray();
+        //    if (!products.Any())
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(products);
+        //}
+
+        //Topic 4: Making the API asynchronous
+        public async Task<ActionResult> GetAllProducts()
         {
-            return _shopContext.Products.ToArray();
+            var products = await _shopContext.Products.ToArrayAsync();
+            if (!products.Any())
+            {
+                return NotFound();
+            }
+            return Ok(products); 
         }
+
+        [Route("api/[controller]")]
+        [HttpGet]
+        public ActionResult GetProduct(int id)
+        {
+            var product = _shopContext.Products.Find(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
+
     }
 }
