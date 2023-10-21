@@ -9,11 +9,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<ShopContext>(options =>
-{
-    options.UseInMemoryDatabase("Shop");
-});
+// Comment out for mongo
+//builder.Services.AddDbContext<ShopContext>(options =>
+//{
+//    options.UseInMemoryDatabase("Shop");
+//});
 
 var app = builder.Build();
 
