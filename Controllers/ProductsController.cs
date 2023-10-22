@@ -57,6 +57,13 @@ namespace ShoeSales.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Product>> GetFromMongo()
         {
+            //var client = new MongoClient("mongodb+srv://lani:Haj1menoMongoru@cluster0.2motmkt.mongodb.net/?retryWrites=true&w=majority");
+            //var database = client.GetDatabase("magasin");
+            //var collection = database.GetCollection<Product>("product");
+
+            
+
+            //var products = collection.Find(s => s.Brand == "New Balance").ToList();
             var products = shoesCollection.Find(s => s.Brand == "New Balance").ToList();
             if (products.Count == 0)
             { 
