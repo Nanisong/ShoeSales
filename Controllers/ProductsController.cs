@@ -11,7 +11,14 @@ namespace ShoeSales.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ShopContext _shopContext;
+        //private readonly ShopContext _shopContext;
+        private IMongoCollection<Product> shoesCollection;
+
+        public ProductsController(IMongoClient client)
+        {
+            var database = client.GetDatabase("magasin");
+            shoesCollection = database.GetCollection<Product>("product");
+        }
         //public ProductsController(ShopContext shopContext)
         //{
         //    _shopContext = shopContext;
@@ -50,12 +57,7 @@ namespace ShoeSales.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Product>> GetFromMongo()
         {
-            var client = new MongoClient("mongodb+srv://lani:Haj1menoMongoru@cluster0.2motmkt.mongodb.net/?retryWrites=true&w=majority");
-            var database = client.GetDatabase("magasin");
-            var collection = database.GetCollection<Product>("product");
-            //return collection.Find(s => s.Brand == "New Balance").ToList();
-            //var products = collection.Find(s => s.Id == 89).ToList();
-            var products = collection.Find(s => s.Brand == "New Balance").ToList();
+            var products = shoesCollection.Find(s => s.Brand == "New Balance").ToList();
             if (products.Count == 0)
             { 
                 return NotFound();

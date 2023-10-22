@@ -1,9 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using ShoeSales.Models;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddSingleton<IMongoClient, MongoClient>(s =>
+{
+    var uri = s.GetRequiredService<IConfiguration>()["MongoUri"];
+    return new MongoClient(uri);
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
