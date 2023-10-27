@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ShoeSales.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using static MongoDB.Driver.WriteConcern;
 
 namespace ShoeSales.Controllers
 {
@@ -54,23 +55,85 @@ namespace ShoeSales.Controllers
         //    }
         //    return Ok(products); 
         //}
+        //[Route("api/[controller]")]
         [HttpGet]
-        public ActionResult<IEnumerable<Product>> GetFromMongo()
+        public async Task<ActionResult> GetAllProduct()
         {
-            //var client = new MongoClient("mongodb+srv://lani:Haj1menoMongoru@cluster0.2motmkt.mongodb.net/?retryWrites=true&w=majority");
-            //var database = client.GetDatabase("magasin");
-            //var collection = database.GetCollection<Product>("product");
-
-            
-
-            //var products = collection.Find(s => s.Brand == "New Balance").ToList();
-            var products = shoesCollection.Find(s => s.Brand == "New Balance").ToList();
+            //To find all documents, pass an empty filter to Find()
+            var fileter = Builders<Product>.Filter.Empty;
+            var product = await shoesCollection.Find(fileter).ToListAsync();
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
+        [HttpGet("byid/{id}")]
+        public async Task<ActionResult> GetProductByID(int id)
+        {
+            //return either the first product that matches the filter, or null if none is found. 
+            var product = await shoesCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
+        [Route("api/[controller]/byprice")]
+        [HttpGet]
+        public async Task<ActionResult> GetProductByPriceRange(decimal minPrice, decimal maxPrice)
+        {
+            var product = await shoesCollection.Find(s => s.Price.CompareTo(maxPrice) <= 0 && s.Price.CompareTo(minPrice) >= 0).ToListAsync();
+            if (product.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
+        [HttpGet("bybrand/{brand}")]
+        public async Task<ActionResult> GetAListOfItems(string brand)
+        {   //Get brand name : New Balance
+            var products =await shoesCollection.Find(s => s.Brand == brand).ToListAsync();
             if (products.Count == 0)
-            { 
+            {   //404
                 return NotFound();
             }
             return Ok(products);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> PostProduct(Product product)
+        {
+            await shoesCollection.InsertOneAsync(product);
+            return CreatedAtAction(nameof(GetAllProduct), new { id = product.Id }, product);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> EditProduct(int id, decimal newPrice)
+        {
+            var existingProduct = await shoesCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+            if (existingProduct == null)
+            {
+                return NotFound();
+            }
+            else 
+            {   // Can only update the Price with ID
+                var filter = Builders<Product>.Filter.Eq(s => s.Id, id);
+                var update = Builders<Product>.Update.Set(s => s.Price, newPrice);
+                await shoesCollection.UpdateOneAsync(filter, update);
+                return NoContent();
+            }
+        }
+
+        //public ActionResult<IEnumerable<Product>> GetFromMongoMotomoto()
+        //{
+        //    var products = shoesCollection.Find(s => s.Brand == "New Balance").ToList();
+        //    if (products.Count == 0)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(products);
+        //}
 
         //[Route("api/[controller]")]
         //[HttpGet]

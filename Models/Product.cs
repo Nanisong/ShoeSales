@@ -1,4 +1,7 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace ShoeSales.Models
@@ -6,13 +9,17 @@ namespace ShoeSales.Models
     //[BsonIgnoreExtraElements] 
     public class Product
     {
-        [BsonId]
-        public object MongoId { get; set; }
+        //[BsonId]
+        [BsonId(IdGenerator = typeof(ObjectIdGenerator))]
+        public ObjectId? MongoId { get; set; }
         [BsonElement("id")]
+        [Required]
         public int Id { get; set; }
         [BsonElement("categoryId")]
+        [Required]
         public int CategoryId { get; set; }
         [BsonElement("brand")]
+        [Required]
         public string Brand { get; set; }
         [BsonElement("name")]
         public string Name { get; set; }
