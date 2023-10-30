@@ -5,6 +5,7 @@ using ShoeSales.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using static MongoDB.Driver.WriteConcern;
+using ShoeSalesAPI.Models;
 
 namespace ShoeSales.Controllers
 {
@@ -56,17 +57,55 @@ namespace ShoeSales.Controllers
         //    return Ok(products); 
         //}
         //[Route("api/[controller]")]
+        //[HttpGet]
+        //public async Task<ActionResult> GetAllProduct()
+        //{
+        //    //To find all documents, pass an empty filter to Find()
+        //    var fileter = Builders<Product>.Filter.Empty;
+        //    var product = await shoesCollection.Find(fileter).ToListAsync();
+        //    if (product == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(product);
+        //}
         [HttpGet]
-        public async Task<ActionResult> GetAllProduct()
+        //public async Task<ActionResult> GetAllProduct()
+        //{
+        //    //To find all documents, pass an empty filter to Find()
+        //    var filter = Builders<Product>.Filter.Empty;
+        //    var product = await shoesCollection.Find(filter).ToListAsync();
+        //    if (product == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(product);
+        //}
+        //[HttpGet]
+        public async Task<ActionResult> GetAllProducts([FromQuery] ProductParametersQuery queryParameters)
         {
+            //V2: to display only products which are available(Filtering)
+            //var filter = Builders<Product>.Filter.Eq(p => p.IsAvailable, true); 
             //To find all documents, pass an empty filter to Find()
-            var fileter = Builders<Product>.Filter.Empty;
-            var product = await shoesCollection.Find(fileter).ToListAsync();
-            if (product == null)
+            var filter = Builders<Product>.Filter.Empty;
+            //MinPrice
+            if (queryParameters.MinPrice != null)
             {
-                return NotFound();
+                filter = filter & Builders<Product>.Filter.Gte(p => p.Price, queryParameters.MinPrice.Value);
             }
-            return Ok(product);
+            //MaxPrice
+            if (queryParameters.MaxPrice != null)
+            {
+                filter = filter & Builders<Product>.Filter.Lte(p => p.Price, queryParameters.MaxPrice.Value);
+            }
+            //SearchTerm
+            if (!string.IsNullOrEmpty(queryParameters.SearchTerm))
+            {
+                filter = filter & Builders<Product>.Filter.Or(Builders<Product>.Filter.Regex(p => p.Name, new BsonRegularExpression(queryParameters.SearchTerm, "i")), Builders<Product>.Filter.Regex(p => p.Name, new BsonRegularExpression(queryParameters.SearchTerm, "i")));
+            }
+            //Choose Page
+            var products = await shoesCollection.Find(filter).Skip(queryParameters.Size * (queryParameters.Page - 1)).Limit(queryParameters.Size).ToListAsync(); 
+            return Ok(products); 
         }
         [HttpGet("byid/{id}")]
         public async Task<ActionResult> GetProductByID(int id)
@@ -105,7 +144,7 @@ namespace ShoeSales.Controllers
         public async Task<ActionResult> PostProduct(Product product)
         {
             await shoesCollection.InsertOneAsync(product);
-            return CreatedAtAction(nameof(GetAllProduct), new { id = product.Id }, product);
+            return CreatedAtAction(nameof(GetProductByID), new { id = product.Id }, product);
         }
 
         [HttpPut]
@@ -116,15 +155,25 @@ namespace ShoeSales.Controllers
             {
                 return NotFound();
             }
-            else 
-            {   // Can only update the Price with ID
-                var filter = Builders<Product>.Filter.Eq(s => s.Id, id);
-                var update = Builders<Product>.Update.Set(s => s.Price, newPrice);
-                await shoesCollection.UpdateOneAsync(filter, update);
-                return NoContent();
-            }
+            // Can only update the Price by ID
+            var filter = Builders<Product>.Filter.Eq(s => s.Id, id);
+            var update = Builders<Product>.Update.Set(s => s.Price, newPrice);
+            await shoesCollection.UpdateOneAsync(filter, update);
+            return NoContent();
         }
-
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProduct(int id)
+        {
+            var product = await shoesCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+            if (product == null)
+            {
+                return NotFound();
+            }
+            // Delete by ID
+            var filter = Builders<Product>.Filter.Eq(s => s.Id, id);
+            await shoesCollection.DeleteOneAsync(filter);
+            return NoContent();
+        }
         //public ActionResult<IEnumerable<Product>> GetFromMongoMotomoto()
         //{
         //    var products = shoesCollection.Find(s => s.Brand == "New Balance").ToList();
