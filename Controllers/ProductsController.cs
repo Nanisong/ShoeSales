@@ -15,8 +15,8 @@ namespace ShoeSales.Controllers
 
     // ** Change Route and ApiController #Working
     [ApiVersion("1.0")]
-    [Route("v{v:apiVersion}/products")]
-    //[Route("products")]
+    //[Route("v{v:apiVersion}/products")]
+    [Route("products")]
     [ApiController]
 
     public class ProductsV1Controller : ControllerBase

@@ -25,11 +25,19 @@ builder.Services.AddApiVersioning(options =>
     //options.ApiVersionReader = new QueryStringApiVersionReader("SMTAFE-api-Version");
 
     // @@@ Safest Option: HTTP Header @@@
-    //options.ApiVersionReader = new HeaderApiVersionReader("X-HARRYPOTTER-version");
+    options.ApiVersionReader = new HeaderApiVersionReader("X-HARRYPOTTER-version");
     //options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+// *** With this swagger has Error when is has two versions ("Failed to load API definition")
+//builder.Services.AddEndpointsApiExplorer();
+// *** To solve swagger Error
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    //This way says we have V and then the version number
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 builder.Services.AddSwaggerGen();
 // Comment out for mongo
 //builder.Services.AddDbContext<ShopContext>(options =>
@@ -45,7 +53,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+else
+{
+    app.UseHsts();
+}
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
