@@ -44,7 +44,16 @@ builder.Services.AddSwaggerGen();
 //{
 //    options.UseInMemoryDatabase("Shop");
 //});
+builder.Services.AddCors(option =>
+{
+    option.AddDefaultPolicy(builder =>
+    {
+        builder
+        .WithOrigins("https://localhost:7117")
+        .WithHeaders("X-HARRYPOTTER-Version");
+    });
 
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -60,6 +69,8 @@ else
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors();
 
 app.MapControllers();
 
