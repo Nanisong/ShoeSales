@@ -14,20 +14,20 @@ builder.Services.AddSingleton<IMongoClient, MongoClient>(s =>
 
 builder.Services.AddControllers();
 ////Add versioning API
-//builder.Services.AddApiVersioning(options =>
-//{
-//    //true: API can return version in HEADER
-//    options.ReportApiVersions = true;
-//    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
-//    options.AssumeDefaultVersionWhenUnspecified = true;
+builder.Services.AddApiVersioning(options =>
+{
+    //true: API can return version in HEADER
+    options.ReportApiVersions = true;
+    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
 
-//    //Option3: QueryString not safe
-//    //options.ApiVersionReader = new QueryStringApiVersionReader("SMTAFE-api-Version");
+    //Option3: QueryString not safe
+    //options.ApiVersionReader = new QueryStringApiVersionReader("SMTAFE-api-Version");
 
-//    // @@@ Safest Option: HTTP Header @@@
-//    //options.ApiVersionReader = new HeaderApiVersionReader("X-HARRYPOTTER-version");
-//    //options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");
-//});
+    // @@@ Safest Option: HTTP Header @@@
+    //options.ApiVersionReader = new HeaderApiVersionReader("X-HARRYPOTTER-version");
+    //options.ApiVersionReader = new HeaderApiVersionReader("X-API-Version");
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
