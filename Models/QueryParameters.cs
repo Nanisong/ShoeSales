@@ -11,5 +11,18 @@
             get { return _pageSize; }
             set { _pageSize = Math.Min(_pageSize, value); }
         }
+        public string sortBy { get; set; } = "Id";
+        private string sortOrder = "asc";
+        public string SortOrder
+        { 
+            get { return sortOrder; }
+            set
+            {
+                if (value == "asc" || value == "desc")
+                {
+                    sortOrder = value;
+                }
+            }
+        }
     }
 }
