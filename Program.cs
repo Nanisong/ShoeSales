@@ -18,7 +18,7 @@ builder.Services.AddApiVersioning(options =>
 {
     //true: API can return version in HEADER
     options.ReportApiVersions = true;
-    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(2, 0);
     options.AssumeDefaultVersionWhenUnspecified = true;
 
     //Option3: QueryString not safe

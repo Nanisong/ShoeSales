@@ -106,12 +106,13 @@ namespace ShoeSales.Controllers
             {
                 filter &= Builders<Product>.Filter.Gte(p => p.Price, queryParameters.MinPrice.Value);
             }
+            
             //SearchTerm
             if (!string.IsNullOrEmpty(queryParameters.SearchTerm))
             {
                 var builder = Builders<Product>.Filter;
                 var regex = new BsonRegularExpression(queryParameters.SearchTerm, "i");
-                filter = builder.Or(
+                filter &= builder.Or(
                     builder.Regex(p => p.Brand, regex),
                     builder.Regex(p => p.Name, regex)
                 );
@@ -146,17 +147,7 @@ namespace ShoeSales.Controllers
             }
             return Ok(product);
         }
-        [Route("api/[controller]/byprice")]
-        [HttpGet]
-        public async Task<ActionResult> GetProductByPriceRange(decimal minPrice, decimal maxPrice)
-        {
-            var product = await shoesCollection.Find(s => s.Price.CompareTo(maxPrice) <= 0 && s.Price.CompareTo(minPrice) >= 0).ToListAsync();
-            if (product.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(product);
-        }
+        
         [HttpGet("bybrand/{brand}")]
         public async Task<ActionResult> GetAListOfItems(string brand)
         {   //Get brand name : New Balance
@@ -168,9 +159,9 @@ namespace ShoeSales.Controllers
             return Ok(products);
         }
         [HttpGet("bybrandAndName")]
-        public async Task<ActionResult> GetMultipleItems()
+        public async Task<ActionResult> GetMultipleItems(string brand, string name)
         {   //Get brand name : New Balance
-            var products = await shoesCollection.Find(s => s.Brand == "New Balance" && s.Name == "2002R").ToListAsync();
+            var products = await shoesCollection.Find(s => s.Brand == brand && s.Name == name).ToListAsync();
             if (products.Count == 0)
             {   //404
                 return NotFound();
@@ -289,7 +280,7 @@ namespace ShoeSales.Controllers
             {
                 var builder = Builders<Product>.Filter;
                 var regex = new BsonRegularExpression(queryParameters.SearchTerm, "i");
-                filter = builder.Or(
+                filter &= builder.Or(
                     builder.Regex(p => p.Brand, regex),
                     builder.Regex(p => p.Name, regex)
                 );
@@ -324,17 +315,7 @@ namespace ShoeSales.Controllers
             }
             return Ok(product);
         }
-        [Route("api/[controller]/byprice")]
-        [HttpGet]
-        public async Task<ActionResult> GetProductByPriceRange(decimal minPrice, decimal maxPrice)
-        {
-            var product = await shoesCollection.Find(s => s.Price.CompareTo(maxPrice) <= 0 && s.Price.CompareTo(minPrice) >= 0).ToListAsync();
-            if (product.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(product);
-        }
+        
         [HttpGet("bybrand/{brand}")]
         public async Task<ActionResult> GetAListOfItems(string brand)
         {   //Get brand name : New Balance
@@ -346,9 +327,9 @@ namespace ShoeSales.Controllers
             return Ok(products);
         }
         [HttpGet("bybrandAndName")]
-        public async Task<ActionResult> GetMultipleItems()
+        public async Task<ActionResult> GetMultipleItems(string brand, string name)
         {   //Get brand name : New Balance
-            var products = await shoesCollection.Find(s => s.Brand == "New Balance" && s.Name == "2002R").ToListAsync();
+            var products = await shoesCollection.Find(s => s.Brand == brand && s.Name == name).ToListAsync();
             if (products.Count == 0)
             {   //404
                 return NotFound();
