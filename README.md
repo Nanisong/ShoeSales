@@ -9,8 +9,10 @@ The ShoeSales Web API provides endpoints for full CRUD functionality:
 - Update: Modify existing product information (e.g., price adjustments, stock updates).
 - Delete: Remove products from the inventory.
   
-### 2. MongoDB Integration 🍃
-ShoeSales breaks away from data seeding by connecting directly to a **MongoDB database**.
+### 2. MongoDB Integration <!-- MongoDB -->
+<p float="center">
+ ShoeSales breaks away from data seeding by connecting directly to a **MongoDB database**. <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original-wordmark.svg" alt="mongodb" width="40" height="40"/>
+</p>
 This real-time interaction ensures that the app reflects the actual state of the shoe inventory.
 
 ### 3. Minimalistic App 👾
