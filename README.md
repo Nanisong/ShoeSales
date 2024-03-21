@@ -1,24 +1,23 @@
 # ShoeSales Web API and App
-ShoeSales is an e-commerce platform designed for shoe enthusiasts. It comprises two main components: the ShoeSales Web API (backend) and the ShoeSales App (frontend). Whether you’re a shoe shopper or a developer, ShoeSales has something to offer.
+ShoeSales is a straightforward e-commerce platform focused on shoes. It follows the **Model-View-Controller (MVC)** architectural pattern, ensuring a well-organized and maintainable codebase. The project consists of two main components: the **ShoeSales Web API** (backend) and the **ShoeSales App** (frontend). While the app remains minimalistic, the Web API showcases essential **CRUD operations** and **MongoDB** integration.
 
 ## Key Features
-### Product Listings:
-The ShoeSales Web API provides endpoints to retrieve a comprehensive list of available shoe products. Users can browse through various categories, view product details, and filter by size, color, and brand.
-### Order Placement:
-Users can place orders directly through the ShoeSales App. The app communicates with the Web API to create orders, handle payment processing, and manage inventory.
-### User Authentication:
-The ShoeSales App includes a login function. Users can create accounts, log in securely, and access personalized features such as order history and saved favorites.
+### 1. Real CRUD Operations
+The ShoeSales Web API provides endpoints for full CRUD functionality:
+- Create: Add new shoe products to the database.
+- Read: Retrieve product details, including availability, price, brand, and name.
+- Update: Modify existing product information (e.g., price adjustments, stock updates).
+- Delete: Remove products from the inventory.
+  
+### 2. MongoDB Integration 
+ShoeSales breaks away from data seeding by connecting directly to a **MongoDB database**.
+This real-time interaction ensures that your app reflects the actual state of the shoe inventory.
 
-Technical Highlights
-## Backend (ShoeSales Web API)
-### Technology Stack:
-Built using .NET 6 and ASP.NET Core.
-Utilizes MongoDB for data storage.
-Implements versioning using Microsoft.AspNetCore.Mvc.Versioning.
-API documentation powered by Swashbuckle.AspNetCore.
-## Frontend (ShoeSales App)
-### Technology Stack:
-Login function.
+### 3. Minimalistic App
+The ShoeSales App serves as a simple interface for users to:
+View available shoe products.
+Log in securely.
+
 ## Screenshots
 API
 ![image](https://github.com/Nanisong/ShoeSales/assets/124329841/786d65e6-f9b0-4c8a-81a3-f23dfa338af5) 
